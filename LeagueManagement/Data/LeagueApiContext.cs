@@ -17,9 +17,20 @@ namespace LeagueManagement.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<League>();
-                
+
+            modelBuilder.Entity<Team>()
+                .HasOne<League>(t => t.League)
+                .WithMany(l => l.Teams)
+                .HasForeignKey(t => t.League_Id)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
+
+
         }
+
+       
         public DbSet<League> League { get; set; }
+        public DbSet<Team> Team { get; set; }
     }
 }

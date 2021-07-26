@@ -1,6 +1,7 @@
 ﻿using LeagueManagement.Data;
 using LeagueManagement.Models;
 using LeagueManagement.Services;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,11 +26,12 @@ namespace LeagueManagement.Repository
         }
         public IEnumerable<League> GetAllLeagues()
         {
-            return _context.League.ToList();
+            return _context.League.Include(x => x.Teams).ToList();
         }
         public League GetLeagueById(int id)
         {
-            return _context.League.SingleOrDefault(x => x.Id == id);
+            return _context.League.Include(x => x.Teams).SingleOrDefault(x => x.Id == id);
+
         }
         public void DeleteLeague(League league)
         {

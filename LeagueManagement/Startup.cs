@@ -39,6 +39,7 @@ namespace LeagueManagement
                     options.UseSqlServer(Configuration.GetConnectionString("DatabaseContext")));
 
             services.AddTransient<ILeagueRepo, LeagueRepo>();
+            services.AddTransient<ITeamRepo, TeamRepository>();
             services.AddMvc();
         }
 
