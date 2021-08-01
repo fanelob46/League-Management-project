@@ -5061,11 +5061,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Fanelo Baloyi\\source\\repos\\LeagueManagement\\LeagueManagement\\LeagueManagement.csproj",
+      "projectUniqueName": "C:\\Users\\Fanelo Baloyi\\source\\repos\\LeagueManagement\\League-Management-project\\LeagueManagement\\LeagueManagement.csproj",
       "projectName": "LeagueManagement",
-      "projectPath": "C:\\Users\\Fanelo Baloyi\\source\\repos\\LeagueManagement\\LeagueManagement\\LeagueManagement.csproj",
+      "projectPath": "C:\\Users\\Fanelo Baloyi\\source\\repos\\LeagueManagement\\League-Management-project\\LeagueManagement\\LeagueManagement.csproj",
       "packagesPath": "C:\\Users\\Fanelo Baloyi\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Fanelo Baloyi\\source\\repos\\LeagueManagement\\LeagueManagement\\obj\\",
+      "outputPath": "C:\\Users\\Fanelo Baloyi\\source\\repos\\LeagueManagement\\League-Management-project\\LeagueManagement\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Fanelo Baloyi\\AppData\\Roaming\\NuGet\\NuGet.Config",

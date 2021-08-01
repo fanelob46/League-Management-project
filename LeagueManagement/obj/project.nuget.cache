@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "gRbvF0jLFZ1nTOSC7HFrfJlX4Mown9FlaRABdRHnv8GZHkGj5PIoKJw7Oi84kFwDBmlXhM5okyC4ZBNH5aJSDw==",
+  "dgSpecHash": "NIGMb029y7exgwQBUSfhVpNlBkgm4xNpT9aZ5orR3mfplcmlnEHCYsTLNaOiqtJHbtUwbpeW7bNDFEh3U4SrHA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Fanelo Baloyi\\source\\repos\\LeagueManagement\\LeagueManagement\\LeagueManagement.csproj",
+  "projectFilePath": "C:\\Users\\Fanelo Baloyi\\source\\repos\\LeagueManagement\\League-Management-project\\LeagueManagement\\LeagueManagement.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Fanelo Baloyi\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\3.1.0\\microsoft.aspnetcore.jsonpatch.3.1.0.nupkg.sha512",
     "C:\\Users\\Fanelo Baloyi\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\3.1.0\\microsoft.aspnetcore.mvc.newtonsoftjson.3.1.0.nupkg.sha512",

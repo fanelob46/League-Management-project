@@ -32,5 +32,6 @@ namespace LeagueManagement.Data
        
         public DbSet<League> League { get; set; }
         public DbSet<Team> Team { get; set; }
+        public DbSet<Player> Player { get; set; }
     }
 }
