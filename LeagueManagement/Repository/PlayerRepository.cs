@@ -29,7 +29,7 @@ namespace LeagueManagement.Repository
 
         public IEnumerable<Player> GetAllPlayers()
         {
-            return _context.Player.Include(x => x.Team).ToList();
+            return _context.Player.ToList();
         }
 
         public IEnumerable<Player> GetPlayerByTeamId(int id)

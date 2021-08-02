@@ -40,6 +40,7 @@ namespace LeagueManagement
 
             services.AddTransient<ILeagueRepo, LeagueRepo>();
             services.AddTransient<ITeamRepo, TeamRepository>();
+            services.AddTransient<IPlayerRepo, PlayerRepository>();
             services.AddMvc();
         }
 

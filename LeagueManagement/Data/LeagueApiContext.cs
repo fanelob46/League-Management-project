@@ -25,6 +25,13 @@ namespace LeagueManagement.Data
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
 
+            modelBuilder.Entity<Player>()
+               .HasOne<Team>(p => p.Team)
+               .WithMany(t => t.Players)
+               .HasForeignKey(p => p.Team_Id)
+               .OnDelete(DeleteBehavior.Cascade)
+               .IsRequired();
+
 
 
         }

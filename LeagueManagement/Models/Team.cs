@@ -13,5 +13,6 @@ namespace LeagueManagement.Models
         public string Location { get; set; }
         public int League_Id { get; set; }
         public virtual League League { get; set; }
+        public virtual ICollection<Player> Players { get; set; }
     }
 }
