@@ -32,6 +32,26 @@ namespace LeagueManagement.Data
                .OnDelete(DeleteBehavior.Cascade)
                .IsRequired();
 
+            modelBuilder.Entity<Fixture>()
+              .HasOne(f => f.League)
+              .WithMany(l => l.Fixtures)
+              .HasForeignKey(f => f.League_Id)
+              .IsRequired();
+
+            modelBuilder.Entity<Fixture>()
+                .HasOne(f => f.Team1)
+                .WithMany(t => t.HomeMatches)
+                .HasForeignKey(f => f.Team1Id)
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired();
+
+            modelBuilder.Entity<Fixture>()
+                .HasOne(f => f.Team2)
+                .WithMany(t => t.AwayMatches)
+                .HasForeignKey(f => f.Team2Id)
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired();
+
 
 
         }
@@ -40,5 +60,6 @@ namespace LeagueManagement.Data
         public DbSet<League> League { get; set; }
         public DbSet<Team> Team { get; set; }
         public DbSet<Player> Player { get; set; }
+        public DbSet<Fixture> Fixture { get; set; }
     }
 }

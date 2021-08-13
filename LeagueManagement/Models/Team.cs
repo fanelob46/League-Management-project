@@ -14,5 +14,8 @@ namespace LeagueManagement.Models
         public int League_Id { get; set; }
         public virtual League League { get; set; }
         public virtual ICollection<Player> Players { get; set; }
+        public List<Fixture> HomeMatches { get; set; }
+        public List<Fixture> AwayMatches { get; set; }
+
     }
 }
