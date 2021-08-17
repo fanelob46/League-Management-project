@@ -24,6 +24,14 @@ namespace LeagueManagement.Repository
 
             return league;
         }
+        public async Task<int> AddTeamStandingAsync(IEnumerable<TableStanding> items)
+        {
+
+
+            await _context.Standings.AddRangeAsync(items);
+            return await _context.SaveChangesAsync();
+        }
+
         public IEnumerable<League> GetAllLeagues()
         {
             return _context.League.Include(x => x.Teams).ToList();
@@ -32,6 +40,22 @@ namespace LeagueManagement.Repository
         {
             return _context.League.Include(x => x.Teams).SingleOrDefault(x => x.Id == id);
 
+        }
+
+        public IEnumerable<TableStanding> GetStandings(int leagueId)
+        {
+            return _context.Standings.Include(t => t.Team).Where(ts => ts.LeagueId == leagueId);
+        }
+
+        public IEnumerable<TableStanding> GetStandings()
+        {
+            return _context.Standings.Include(t => t.Team);
+        }
+
+        public async Task<int> RemoveTeamStandingAsync(IEnumerable<TableStanding> items)
+        {
+            _context.Standings.RemoveRange(items);
+            return await _context.SaveChangesAsync();
         }
         public void DeleteLeague(League league)
         {

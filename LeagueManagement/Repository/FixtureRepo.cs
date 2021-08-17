@@ -1,6 +1,7 @@
 ﻿using LeagueManagement.Data;
 using LeagueManagement.Models;
 using LeagueManagement.Services;
+using LeagueManagement.Helper;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -24,35 +25,19 @@ namespace LeagueManagement.Repository
             _context.SaveChanges();
             fixture.Id = _fixture.Entity.Id;
 
-            ///await RecalculateLeagueStandingsAsync(fixture.Id);
+            await RecalculateLeagueStandingsAsync(fixture.Id);
 
             return fixture;
         }
 
-        public void DeleteFixture(Fixture results)
+        public async Task<Score> AddScore(Score score)
         {
-            _context.Remove(results);
+            var _score = _context.Add(score);
             _context.SaveChanges();
-        }
-
-        public IEnumerable<Fixture> GetAllFixtures()
-        {
-            return _context.Fixture.Include(x => x.Team1).Include(x => x.Team2).ThenInclude(x => x.League).ToList();
-        }
-
-        public Fixture GetFixtureById(int id)
-        {
-            return _context.Fixture.Include(x => x.Team1).Include(x => x.Team2).Include(x => x.League).SingleOrDefault(x => x.Id == id);
-        }
-
-     public async Task<Score> AddScore(Score score)
-        {
-            var _Score = _context.Add(score);
-            _context.SaveChanges();
-            score.Id = _Score.Entity.Id;
+            score.Id = _score.Entity.Id;
 
             var _fixture = GetFixtureById(score.Fixture_Id);
-            var _scores = GetAllScores();
+            var _scores = GetScores();
 
             var players = GetPlayers(_fixture.Team1Id);
             var awayPlayers = GetPlayers(_fixture.Team2Id);
@@ -73,23 +58,132 @@ namespace LeagueManagement.Repository
             await addFixtureScore(_fixture);
 
 
-            //await RecalculateLeagueStandingsAsync(score.FixtureId);
+            await RecalculateLeagueStandingsAsync(score.Fixture_Id);
 
             return score;
         }
-        public IEnumerable<Score> GetAllScores()
-        {
-            return _context.Scores.ToList();
-        }
-        public List<Player> GetPlayers(int teamId)
-        {
-            return _context.Player.Where(p => p.Team_Id == teamId).ToList();
-        }
+
         private async Task addFixtureScore(Fixture fixture)
         {
             _context.Update(fixture);
             _context.SaveChangesAsync();
         }
+
+        public void DeleteFixture(Fixture results)
+        {
+            _context.Remove(results);
+            _context.SaveChanges();
+        }
+
+        private async Task<League> GetAndValidateItem(int leagueId)
+        {
+            var league = await _context.League.SingleOrDefaultAsync(l => l.Id == leagueId);
+
+            if (league == null)
+            {
+                throw new Exception($"League with id={leagueId} doesn't exist");
+            }
+
+            return league;
+        }
+
+        public async Task RecalculateLeagueStandingsAsync(int leagueId)
+        {
+
+            var league = new LeagueRepo(_context).GetLeagueById(leagueId);
+
+            var teams = new TeamRepository(_context).GetAllTeams().Where(t => t.League_Id == leagueId)
+                .Select(t => t.Id);
+
+            var currentStandings = new List<TableStanding>();
+
+            foreach (var teamId in teams)
+            {
+                var playedMatches = new FixtureRepo(_context).GetAllFixtures()
+                    .Where(m => m.League_Id == league.Id
+                        && (m.Team1Id == teamId || m.Team2Id == teamId)
+                        && m.Date < DateTime.Now);
+
+                var tableStanding = new TableStanding()
+                {
+                    LeagueId = leagueId,
+                    TeamId = teamId
+                };
+
+                foreach (var match in playedMatches)
+                {
+                    tableStanding.ApplyFixture(match);
+                }
+                currentStandings.Add(tableStanding);
+            }
+
+            LeagueTableSorter.CalculateTeamPositions(currentStandings);
+
+
+
+            var oldStandings = new LeagueRepo(_context).GetStandings(leagueId)
+              .Where(t => t.LeagueId == leagueId);
+
+            new LeagueRepo(_context).RemoveTeamStandingAsync(oldStandings);
+            System.Threading.Thread.Sleep(10000);
+            new LeagueRepo(_context).AddTeamStandingAsync(currentStandings);
+
+        }
+
+        public IEnumerable<Fixture> GetAllFixtures()
+        {
+            return _context.Fixture.Include(x => x.Team1).Include(x => x.Team2).Include(x => x.Scores).Include(x => x.League).ToList();
+        }
+
+
+        public IEnumerable<Score> GetScores()
+        {
+            return _context.Scores.ToList();
+        }
+
+        public Fixture GetFixtureById(int id)
+        {
+            return _context.Fixture.Include(x => x.Scores).Include(x => x.Team1).Include(x => x.Team2).Include(x => x.League).SingleOrDefault(x => x.Id == id);
+        }
+
+        public List<Player> GetPlayers(int teamId)
+        {
+            return _context.Player.Where(p => p.Team_Id == teamId).ToList();
+        }
+        public async Task UpdateFixture(Fixture fixture)
+        {
+            var _fixture = GetFixtureById(fixture.Id);
+            // _fixture.Date = fixture.Date;
+            _fixture.Team1Score = fixture.Team1Score;
+            _fixture.Team2Score = fixture.Team2Score;
+            _context.Update(_fixture);
+            _context.SaveChanges();
+
+            await RecalculateLeagueStandingsAsync(_fixture.League_Id);
+        }
+
+        public async Task DeleteStandings(int LeagueId, List<TableStanding> currentStandings)
+        {
+            var standings = _context.Standings.Where(x => x.LeagueId == LeagueId);
+            _context.RemoveRange(standings);
+            await _context.SaveChangesAsync();
+
+
+            await new LeagueRepo(_context).AddTeamStandingAsync(currentStandings);
+        }
+
+        public IEnumerable<Fixture> GetAllFixturesByLeagueId(int id)
+        {
+            return _context.Fixture.Include(x => x.Team1).Include(x => x.Team2).ThenInclude(x => x.League).Where(l => l.League_Id == id).ToList();
+        }
+
+        public IEnumerable<Fixture> GetAllFixturesByTeamId(int id)
+        {
+            return _context.Fixture.Include(x => x.Team1).Include(x => x.Team2).ThenInclude(x => x.League).Where(t => t.Team1Id == id || t.Team2Id == id).ToList();
+        }
+        
+
+
         public async Task UpdateFixtureResults(Fixture results)
         {
             try
@@ -127,7 +221,7 @@ namespace LeagueManagement.Repository
 
                 _context.Update(item);
 
-               // await RecalculateLeagueStandingsAsync(item.LeagueId);
+                await RecalculateLeagueStandingsAsync(item.League_Id);
             }
             catch (Exception ex)
             {

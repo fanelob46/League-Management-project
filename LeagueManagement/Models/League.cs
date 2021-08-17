@@ -11,6 +11,7 @@ namespace LeagueManagement.Models
         public string Name { get; set; }
         public string Country { get; set; }
         public virtual ICollection<Team> Teams { get; set; }
+        public List<TeamTableStanding> Standings { get; set; }
         public List<Fixture> Fixtures { get; set; }
 
 
