@@ -9,9 +9,12 @@ namespace LeagueManagement.Services
    public interface IFixtureRepo
     {
         Task<Fixture> Add(Fixture fixture);
+        Task<Score> AddScore(Score score);
         IEnumerable<Fixture> GetAllFixtures();
+        IEnumerable<Score> GetAllScores();
 
         Fixture GetFixtureById(int id);
+        Task UpdateFixtureResults(Fixture fixture);
 
         //Task UpdateFixture(Fixture results);
 

@@ -61,5 +61,6 @@ namespace LeagueManagement.Data
         public DbSet<Team> Team { get; set; }
         public DbSet<Player> Player { get; set; }
         public DbSet<Fixture> Fixture { get; set; }
+        public DbSet<Score> Scores { get; set; }
     }
 }

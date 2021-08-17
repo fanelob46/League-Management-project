@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace LeagueManagement.Controllers
 {
+    [Route("api/[controller]")]
     public class FixtureController : Controller
     {
         private readonly IFixtureRepo _fixtureRepository;
